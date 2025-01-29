@@ -1,0 +1,80 @@
+
+-- * 1  print two columns name and IncreasedSalary - salary increased by 10% of all employees (expected columns - name, IncreasedSalary)
+select Name , Salary *1.1 as IncreasedSalary
+from employees e 
+
+-- * 2 retrieve the name and email of all employees that don't have manager (expected columns - name, email)
+select Name , Email 
+from employees e 
+where ManagerId is null 
+
+-- * 3 retrieve id and names of skills that contain 'Java' (expected columns - id, name)
+select Id , Name 
+from skills s 
+where name like  '%Java%'
+
+-- * 4 retrieve id, fromDate and toDate of vacations with a status of 'PENDING' (expected columns - id, FromDate, ToDate )
+select Id , FromDate , ToDate 
+from vacations v 
+where Status = 'pending'
+
+-- * 5 retrieve the names and salaries of all employees that have a salary of less than 1000 or exactly 2000 (expected columns - name, salary)
+select Name , Salary 
+from employees e 
+where Salary <1000 or salary =2000
+
+-- * 6 retrieve the names of the first 10 employees that joined the company (expected columns - name)
+select Name 
+from employees e 
+order by HireDate 
+limit 10
+
+-- * 7 retrieve the names of the last 10 employees that joined the company (expected columns - name)
+select Name 
+from employees e 
+order by HireDate desc 
+limit 10
+
+-- * 8 retrieve ids of the last 2 requested vacations in 2009 (expected columns - id)
+select Id 
+from vacations v 
+where RequestDate between '2009-01-01' and '2009-12-31'
+order by RequestDate desc 
+limit 2
+
+-- * 9 retrieve employeeids that have requested a vacation in 2013 (expected columns - EmployeeId, requestdate)
+select EmployeeId , RequestDate 
+from vacations v 
+where RequestDate between '2013-01-01' and '2013-12-31'
+
+-- * 10 retrieve the names of all vendors whose name starts with 'M'(expected columns - name)
+select Name 
+from vendors v
+where name like 'M%'
+
+-- * 11 Изведете всички отдели, които съдържат думата Dev (expected columns - Name)
+select Name 
+from departments d
+where Name like '%Dev%'
+
+-- * 12 Изведете всички позиции/тайтъли, които започват с думата Junior (expected columns - Name)
+select Name 
+from titles t 
+where Name like 'Junior%'
+
+-- * 13 Изведете всички имена на служители, които съдържат ov ,но не завършват на него. (expected columns - Name)
+select Name 
+from employees e 
+where Name like '%ov%' and Name not like '%ov'
+
+-- * 14 retrieve the number of managers (expected columns - cnt)
+select count(distinct ManagerId) as cnt
+from employees e 
+WHERE managerid IS NOT NULL;
+
+-- * 15 Изведете ИД-тата на позициите/тайтълите и по колко служителя има за всеки един от тях (expected columns - TitleId, CountOfEmployees)
+select TitleId, count(TitleId) as CountOfEmployees
+from employees e 
+group by TitleId 
+
+ -- Homework_1

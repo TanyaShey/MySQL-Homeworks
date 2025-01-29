@@ -1,0 +1,89 @@
+
+-- * 1 Намерете кога за последно е подадена молба за отпуск през 2010-та (expected columns - LastRequestDate)
+select max(RequestDate) as LastRequestDate
+from vacations v 
+where RequestDate >= '2010-01-01' and RequestDate < '2011-01-01'
+order by RequestDate desc
+limit 1;
+
+-- * 2 Изведете бройката на служителите, които са ползвали отпуск през 2009-та (expected columns - cnt)
+select count(distinct EmployeeId) as cnt 
+from vacations v 
+where Status ='APPROVED'
+AND ((year(FromDate)=2009 AND YEAR(ToDate)=2009)
+OR (year(FromDate)<=2008 AND YEAR(ToDate)=2009) 
+OR (year(FromDate)=2009 AND YEAR(ToDate)>=2010)
+OR (year(FromDate)<=2008 AND YEAR(ToDate)>=2010));
+
+SELECT COUNT(DISTINCT EmployeeID) AS cnt
+FROM Vacations v
+WHERE Status = 'APPROVED'AND FromDate <= '2009-12-31' AND ToDate >= '2009-01-01';
+
+-- * 3 Изведете бройката на служителите, наети през последните 2 години и 6 месеца (expected columns - CountOfEmployees)
+SELECT count(*) as CountOfEmployees
+FROM employees e 
+WHERE HireDate >= adddate(curdate(), INTERVAL -30 month);
+
+-- * 4 Изведете бройката на наетите служители по години и месеци (expected columns - year, month, CountOfEmployees)
+SELECT YEAR(HireDate) AS year, MONTH(HireDate) AS month, count(*) AS CountOfEmployees
+FROM employees e 
+GROUP BY YEAR(HireDate), MONTH(HireDate)
+ORDER BY YEAR(HireDate), MONTH(HireDate);
+
+-- * 5 Изведете първо число на текущ месец/година (expected columns - FD )
+SELECT subdate(curdate() , INTERVAL DAY(curdate()) -1 DAY) AS FD;
+
+SELECT DATE(CONCAT(YEAR(CURDATE()), '-', MONTH(CURDATE()), '-01')) AS FD;
+
+-- * 6 Изведете 3-те месеца, в които са се подали най-много молби за отпуск. (expected columns - month, vacations)
+SELECT MONTH(RequestDate) AS month, count(*) AS vacations
+FROM vacations v 
+GROUP BY MONTH (RequestDate)
+ORDER BY vacations DESC
+LIMIT 3;
+
+-- * 7 Изведете две колони - година и дата на която е подаден първия отпуск за годината (expected columns - year, FirstRequestDate)
+SELECT YEAR (RequestDate) AS year, min(RequestDate) AS FirstRequestDate
+FROM vacations v 
+GROUP BY YEAR(RequestDate); 
+
+-- * 8 Изведете две колони - име на служител и брой дни в които е работил/работи в компанията (expected columns - name, NumberOfDaysInCompany)
+SELECT name,
+CASE
+	WHEN enddate IS NULL THEN datediff(curdate(), HireDate)
+	ELSE datediff(EndDate, HireDate)
+END AS NumberOfDaysInCompany
+FROM employees e ;
+
+select name, datediff(coalesce(EndDate, now()), HireDate)  as NumberOfDaysInCompany
+from employees e
+
+-- * 9 Print the names of the skills and the number of the employees that have such skill (expected columns - name, CntEmployees)
+SELECT Name AS name, count(EmployeeId) AS CntEmployees 
+FROM skills s 
+LEFT OUTER JOIN employee_skills es 
+ON s.Id =es.SkillId 
+GROUP BY s.Name;
+
+-- * 10 Print the names of the departments with more than 2 employees that have salary > 2000 (expected columns - name, CntEmployees) 
+SELECT d.Name AS name, count(e.Id) AS CntEmployees
+FROM departments d 
+inner JOIN employees e 
+ON d.Id = e.DepartmentId 
+WHERE e.Salary >2000
+group BY d.name
+HAVING count(e.Id)>2; 
+
+-- * 11 Print the number of employees that have been on vacation more than 10 days for 2012 (expected columns - cnt)
+select count(distinct employeeid) as cnt
+from vacations v
+where Status ='APPROVED'
+AND (
+	(year(FromDate)=2012 AND YEAR(ToDate)=2012 and datediff(ToDate, fromdate) > 10 )
+	OR (year(FromDate)<=2011 AND YEAR(ToDate)=2012 and datediff(ToDate, '2012-01-01') > 10)
+	OR (year(FromDate)=2012 AND YEAR(ToDate)>=2013 and datediff('2012-12-31', fromdate) > 10)
+	OR (year(FromDate)<=2011 AND YEAR(ToDate)>=2013 )
+	);
+
+
+ -- Homework_2
